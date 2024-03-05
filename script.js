@@ -21,7 +21,7 @@ function Player(id, name,jersey,team, position){
 }
 
 async function fetchPlayers(){
-    return await((await fetch('http://localhost:3000/api/players')).json())
+    return await((await fetch('http://localhost:3002/api/players')).json())
 }
 
 let players =  await fetchPlayers()
@@ -70,7 +70,7 @@ closeDialog.addEventListener("click",async (ev)=>{
     ev.preventDefault()
     let url = ""
     let method = ""
-    console.log(url)
+    // console.log(url)
     var o = {
         "name" : playerName.value,
         "jersey" : jersey.value,
@@ -79,12 +79,13 @@ closeDialog.addEventListener("click",async (ev)=>{
 
     if(editingPlayer != null){
         o.id = editingPlayer.id;
-        url =  "http://localhost:3000/api/players/" + o.id
+        url =  "http://localhost:3002/api/players/" + o.id
         method = "PUT"
     }else{
-        url =  "http://localhost:3000/api/players"
+        url =  "http://localhost:3002/api/players"
         method = "POST"
     }
+    
 
     let response = await fetch(url,{
         headers: {
@@ -95,7 +96,7 @@ closeDialog.addEventListener("click",async (ev)=>{
           body: JSON.stringify(o)                
     })
 
-    let json = await response.json()
+    // let json = await response.json()
 
     players = await fetchPlayers()
     updateTable()
@@ -132,19 +133,32 @@ const updateTable = function(){
 
         let td = document.createElement("td")
         let btn = document.createElement("button")
+        const btnDelete =document.createElement("button")
         btn.textContent = "EDIT"
+        btnDelete.textContent ="DELETE"
         btn.dataset.stefansplayerid=players[i].id
+        btnDelete.dataset.stefansplayerid =players [i].id
         td.appendChild(btn)
+        td.appendChild(btnDelete)
         tr.appendChild(td)
 
-
-        btn.addEventListener("click",onClickPlayer);
-
-        // btn.addEventListener("click",function(){
-        //       alert(players[i].name)  
-        //       //                      detta funkar fast med sk closures = magi vg
-        // })
-
+        
+        btn.addEventListener ("click",onClickPlayer);
+      
+      
+        async function deletePlayer (e){
+            const playerId = e.target.dataset.stefansplayerid
+            let url = `http://localhost:3002/api/players/${playerId}`;
+            
+            let response = await fetch(url, {
+                method: 'DELETE'
+            });
+            const index = players.findIndex(p => p.id == playerId)
+            players.splice(index, 1)
+            updateTable()
+        }
+        
+        btnDelete.addEventListener("click", deletePlayer);
 
         allPlayersTBody.appendChild(tr)
     }
@@ -165,8 +179,6 @@ const updateTable = function(){
 
 
 updateTable()
-
-
 
 
 
