@@ -50,6 +50,7 @@ const createTableTdOrTh = function(elementType,innerText){
 const playerName = document.getElementById("playerName")
 const jersey = document.getElementById("jersey")
 const position = document.getElementById("position")
+const team = document.getElementById("team")
 
 let editingPlayer = null
 
@@ -59,6 +60,7 @@ const onClickPlayer = function(event){
     const player = players.find(p=> p.id == htmlElementetSomViHarKlickatPa.dataset.stefansplayerid)
     playerName.value = player.name
     jersey.value = player.jersey
+    team.value = player.team
     position.value = player.position
     editingPlayer = player
 
@@ -74,7 +76,8 @@ closeDialog.addEventListener("click",async (ev)=>{
     var o = {
         "name" : playerName.value,
         "jersey" : jersey.value,
-        "position": position.value
+        "position": position.value,
+        "team": team.value
         }
 
     if(editingPlayer != null){
@@ -86,7 +89,6 @@ closeDialog.addEventListener("click",async (ev)=>{
         method = "POST"
     }
     
-
     let response = await fetch(url,{
         headers: {
             'Accept': 'application/json',
@@ -107,6 +109,7 @@ btnAdd.addEventListener("click",()=>{
     playerName.value = ""
     jersey.value = 0
     position.value = ""
+    team.value = ""
     editingPlayer = null
 
     MicroModal.show('modal-1');
@@ -136,8 +139,8 @@ const updateTable = function(){
         const btnDelete =document.createElement("button")
         btn.textContent = "EDIT"
         btnDelete.textContent ="DELETE"
-        btn.dataset.stefansplayerid=players[i].id
-        btnDelete.dataset.stefansplayerid =players [i].id
+        btn.dataset.stefansplayerid = players[i].id
+        btnDelete.dataset.stefansplayerid = players[i].id
         td.appendChild(btn)
         td.appendChild(btnDelete)
         tr.appendChild(td)
@@ -145,8 +148,9 @@ const updateTable = function(){
         
         btn.addEventListener ("click",onClickPlayer);
       
+
       
-        async function deletePlayer (e){
+        async function deletePlayer(e){
             const playerId = e.target.dataset.stefansplayerid
             let url = `http://localhost:3002/api/players/${playerId}`;
             
@@ -174,9 +178,6 @@ const updateTable = function(){
     // }
     // createElement
 }
-
-
-
 
 updateTable()
 
