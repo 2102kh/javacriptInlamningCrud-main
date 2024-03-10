@@ -568,6 +568,18 @@
   background-color: #00449e;
   color: #fff;
 }
+ button{
+  padding:5px;
+  border-radius: 5px;
+ 
+}
+td{
+
+  padding: 7px;
+}
+#btnAdd{
+  padding: 18px;
+}
 
 
 

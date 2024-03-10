@@ -1,7 +1,5 @@
 const searchPlayer = document.getElementById("searchPlayer")
-const tbody = document.getElementById("tbody")
-const sortIdDown = document.getElementById("sortIdDown")
-const sortIdUp = document.getElementById("sortIdUp")
+const tbody = document.querySelector("#allPlayers tbody")
 const allSortLinks = document.getElementsByClassName('bi') 
 
 let currentSortCol = "id"
@@ -35,9 +33,9 @@ Object.values(allSortLinks).forEach(link=>{
 
 
 
-filterInput.addEventListener("input",(e)=>{
-    updateQuery(e.target.value)
-})
+// filterInput.addEventListener("input",(e)=>{
+//     updateQuery(e.target.value)
+// })
 
 
 
@@ -55,7 +53,7 @@ async function refresh(){
             'Accept': 'application/json'
         }
     })
-
+    
     const products = await response.json()
     tbody.innerHTML = ""
     products.forEach(player=>{
