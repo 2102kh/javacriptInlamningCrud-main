@@ -141,7 +141,6 @@ btnAdd.addEventListener("click",()=>{
     position.value = ""
     team.value = ""
     editingPlayer = null
-
     MicroModal.show('modal-1');
     
 })
@@ -158,7 +157,6 @@ const updateTable = function(){
             continue
         }
         let tr = document.createElement("tr")
-
         tr.appendChild(createTableTdOrTh("th", players[i].name))
         tr.appendChild(createTableTdOrTh("td", players[i].jersey ))
         tr.appendChild(createTableTdOrTh("td", players[i].position ))
@@ -173,12 +171,8 @@ const updateTable = function(){
         btnDelete.dataset.stefansplayerid = players[i].id
         td.appendChild(btn)
         td.appendChild(btnDelete)
-        tr.appendChild(td)
-
-        
+        tr.appendChild(td)        
         btn.addEventListener ("click",onClickPlayer);
-      
-
       
         async function deletePlayer(e){
             const playerId = e.target.dataset.stefansplayerid
