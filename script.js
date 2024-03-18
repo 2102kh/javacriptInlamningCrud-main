@@ -1,9 +1,16 @@
-
-
-const allPlayersTBody = document.querySelector("#allPlayers tbody")
+const allSortLinks = document.getElementsByClassName('bi') 
+const pager = document.getElementById('pager')
+const tbody = document.querySelector("#allPlayers tbody")
 const searchPlayer = document.getElementById("searchPlayer")
 const btnAdd = document.getElementById("btnAdd")
 const closeDialog = document.getElementById("closeDialog")
+
+
+  let currentSortCol = ""
+  let currentSortOrder = "" 
+  let currentSearchText = ""
+  let currentPageNo = 1
+  let currentPageSize = 5
 
 
 function Player(id, name,jersey,team, position){
@@ -21,24 +28,62 @@ function Player(id, name,jersey,team, position){
 }
 
 async function fetchPlayers(){
-    return await((await fetch('http://localhost:3002/api/players')).json())
+    return await((await fetch('http://localhost:3000/api/players')).json())
 }
 
 let players =  await fetchPlayers()
 
 searchPlayer.addEventListener("input", function() {
-    const searchFor = searchPlayer.value.toLowerCase() 
-    for(let i = 0; i < players.length;i++){ // TODO add a matches function
-        if(players[i].matches(searchFor)){
-            players[i].visible = true                            
-        }else{
-            players[i].visible = false 
-        }
-    }
-    updateTable()
+ const searchFor = searchPlayer.value.toLowerCase()
+  for(let i = 0; i < players.length;i++){ // TODO add a matches function 
+  if(players[i].matches(searchFor)){
+     players[i].visible = true
+     }else{ players[i].visible = false 
+     }
+   } updateTable()
 
 });
 
+const onClickPlayer = function(event){
+    const htmlElementetSomViHarKlickatPa = event.target
+    console.log(htmlElementetSomViHarKlickatPa.dataset.stefansplayerid)
+    // const player = Object.values(players).find(p => p.id == htmlElementetSomViHarKlickatPa.dataset.stefansplayerid);
+
+    const player = players.find(p=> p.id == htmlElementetSomViHarKlickatPa.dataset.stefansplayerid)
+    console.log(player)
+    playerName.value = player.name
+    jersey.value = player.jersey
+    team.value = player.team
+    position.value = player.position
+    editingPlayer = player
+    MicroModal.show('modal-1');
+
+}
+
+
+  Object.values(allSortLinks).forEach(link=>{
+    link.addEventListener("click",()=>{
+        currentSortCol = link.dataset.sortcol
+        currentSortOrder = link.dataset.sortorder
+        refresh()
+    })
+    
+})
+function debounce(cb, delay = 250) {
+    let timeout
+  
+    return (...args) => {
+      clearTimeout(timeout)
+      timeout = setTimeout(() => {
+        cb(...args)
+      }, delay)
+    }
+  }
+
+  const updateQuery = debounce(query => {
+    currentSearchText = query
+    refresh()
+  }, 1000)
 
 const createTableTdOrTh = function(elementType,innerText){
     let element = document.createElement(elementType)
@@ -54,19 +99,6 @@ const team = document.getElementById("team")
 
 let editingPlayer = null
 
-const onClickPlayer = function(event){
-    const htmlElementetSomViHarKlickatPa = event.target
-    console.log(htmlElementetSomViHarKlickatPa.dataset.stefansplayerid)
-    const player = players.find(p=> p.id == htmlElementetSomViHarKlickatPa.dataset.stefansplayerid)
-    playerName.value = player.name
-    jersey.value = player.jersey
-    team.value = player.team
-    position.value = player.position
-    editingPlayer = player
-
-    MicroModal.show('modal-1');
-
-}
 
 closeDialog.addEventListener("click",async (ev)=>{
     ev.preventDefault()
@@ -82,10 +114,10 @@ closeDialog.addEventListener("click",async (ev)=>{
 
     if(editingPlayer != null){
         o.id = editingPlayer.id;
-        url =  "http://localhost:3002/api/players/" + o.id
+        url =  "http://localhost:3000/api/players/" + o.id
         method = "PUT"
     }else{
-        url =  "http://localhost:3002/api/players"
+        url =  "http://localhost:3000/api/players"
         method = "POST"
     }
     
@@ -120,7 +152,7 @@ btnAdd.addEventListener("click",()=>{
 const updateTable = function(){
     // while(allPlayersTBody.firstChild)
     //     allPlayersTBody.firstChild.remove()
-    allPlayersTBody.innerHTML = ""
+    tbody.innerHTML = ""
 
     // först ta bort alla children
     for(let i = 0; i < players.length;i++) { // hrmmm you do foreach if you'd like, much nicer! 
@@ -152,7 +184,7 @@ const updateTable = function(){
       
         async function deletePlayer(e){
             const playerId = e.target.dataset.stefansplayerid
-            let url = `http://localhost:3002/api/players/${playerId}`;
+            let url = `http://localhost:3000/api/players/${playerId}`;
             
             let response = await fetch(url, {
                 method: 'DELETE'
@@ -164,7 +196,7 @@ const updateTable = function(){
         
         btnDelete.addEventListener("click", deletePlayer);
 
-        allPlayersTBody.appendChild(tr)
+        tbody.appendChild(tr)
     }
 
     // innerHTML och backticks `
@@ -196,8 +228,96 @@ MicroModal.init({
     awaitCloseAnimation: false, // [9]
     debugMode: true // [10]
   });
+searchPlayer.addEventListener("input",(e)=>{
+    currentSearchText = e.target.value
+    refresh()
+})
+
+function createPager(count, pageNo, currentPageSize){
+    pager.innerHTML = ""
+    let totalPages = Math.ceil(count / currentPageSize)
+    for(let i = 1; i <= totalPages; i++){
+        const li = document.createElement('li')
+        li.classList.add("page-item")
+        if(i == pageNo){
+            li.classList.add("active")
+        }
+        const a = document.createElement('a')
+        a.href="#"
+        a.innerText = i
+        a.classList.add("page-link")
+        li.appendChild(a)
+        a.addEventListener("click",()=>{
+            
+            currentPageNo = i
+            refresh()
+        })
+        pager.appendChild(li)
+    }
+}
+function createTd(data){
+    let element =  document.createElement("td")
+    element.innerText = data
+    return element
+}
 
 
+async function refresh(){
+    let offset = (currentPageNo - 1) * currentPageSize
+
+    //fetch!
+    let url = "http://localhost:3000/api/players?sortBy=" 
+        + currentSortCol + "&sortOrder=" + currentSortOrder +
+         "&q=" + currentSearchText + "&limit=" + currentPageSize+  "&offset=" + offset
+         console.log(url)
+   
+    // let url = "http://localhost:3000/api/players?sortCol=" 
+    //     + currentSortCol + "&sortOrder=" + currentSortOrder + "&limit=200"
+    //      + "&offset=0" 
+    
+
+    const response = await fetch(url,{
+        headers:{
+            'Accept': 'application/json'
+        }
+    })
+
+    const result = await response.json()
+    console.log(result)
+    const count = result.total
+    players = result.result
+    console.log(players)
+    tbody.innerHTML = ""
+    players.forEach (play=> {
+        const tr = document.createElement("tr")
+        tr.appendChild(createTd(play.id))
+        tr.appendChild(createTd(play.name))
+        tr.appendChild(createTd(play.jersey))
+        tr.appendChild(createTd(play.position))
+        tr.appendChild(createTd(play.team))
+
+
+        let td = document.createElement("td")
+        let btn = document.createElement("button")
+        const btnDelete =document.createElement("button")
+        btn.textContent = "EDIT"
+        btnDelete.textContent ="DELETE"
+        btn.dataset.stefansplayerid = play.id
+        btnDelete.dataset.stefansplayerid = play.id
+        td.appendChild(btn)
+        td.appendChild(btnDelete)
+        tr.appendChild(td)
+
+        
+        btn.addEventListener ("click",onClickPlayer);
+
+        tbody.appendChild(tr)
+    })
+    createPager(count,currentPageNo,currentPageSize)
+    
+}
+
+ await refresh()
 
 
   

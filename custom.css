@@ -639,3 +639,6 @@ td{
   display:flex;
   justify-content: space-between;
 }
+.none{
+  display: none;
+}

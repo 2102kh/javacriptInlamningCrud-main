@@ -36,10 +36,12 @@
 <table role="grid" id="allPlayers">
 <thead>
   <tr>
+    <th scope="col">Id<i data-sortcol="name" data-sortorder="asc" class="bi bi-arrow-up "></i><i data-sortcol="name" data-sortorder="desc" class="bi bi-arrow-down "></i></th>
     <th scope="col">Name<i data-sortcol="name" data-sortorder="asc" class="bi bi-arrow-up"></i><i data-sortcol="name" data-sortorder="desc" class="bi bi-arrow-down"></i></th>
     <th scope="col">Jersey <i data-sortcol="jersey" data-sortorder="asc" class="bi bi-arrow-up"></i>  <i data-sortcol="jersey" data-sortorder="desc" class="bi bi-arrow-down"></i></th>
     <th scope="col">Position <i data-sortcol="position" data-sortorder="asc" class="bi bi-arrow-up"></i>  <i data-sortcol="position" data-sortorder="desc" class="bi bi-arrow-down"></i></th>
     <th scope="col">Team <i data-sortcol="team" data-sortorder="asc" class="bi bi-arrow-up"></i>  <i data-sortcol="team" data-sortorder="desc" class="bi bi-arrow-down"></i></th>
+    <th></th>
   </tr>
 </thead>
 <tbody>
@@ -56,7 +58,7 @@
       <a class="page-link" href="#">2</a>
     </li>
     <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item"><a class="page-link" href="#">4</a></li>
+    <li class="page-item"><a class="page-link" href="#">...</a></li>
   </ul>
 </nav>
 <button id="btnAdd">Add new player</button>
@@ -140,8 +142,7 @@
  </div>
 
   <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
-  <!-- <script src="/paging.js"></script> -->
-  <script type="module" src="paging.js"></script>
   <script type="module" src="script.js"></script>
+  <!-- <script src="sortering.js"></script> -->
   </body>
 </html>
