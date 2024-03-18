@@ -38,7 +38,8 @@ searchPlayer.addEventListener("input", function() {
   for(let i = 0; i < players.length;i++){ // TODO add a matches function 
   if(players[i].matches(searchFor)){
      players[i].visible = true
-     }else{ players[i].visible = false 
+     }else{
+     players[i].visible = false 
      }
    } updateTable()
 
@@ -47,8 +48,6 @@ searchPlayer.addEventListener("input", function() {
 const onClickPlayer = function(event){
     const htmlElementetSomViHarKlickatPa = event.target
     console.log(htmlElementetSomViHarKlickatPa.dataset.stefansplayerid)
-    // const player = Object.values(players).find(p => p.id == htmlElementetSomViHarKlickatPa.dataset.stefansplayerid);
-
     const player = players.find(p=> p.id == htmlElementetSomViHarKlickatPa.dataset.stefansplayerid)
     console.log(player)
     playerName.value = player.name
@@ -59,7 +58,6 @@ const onClickPlayer = function(event){
     MicroModal.show('modal-1');
 
 }
-
 
   Object.values(allSortLinks).forEach(link=>{
     link.addEventListener("click",()=>{
@@ -308,11 +306,12 @@ async function refresh(){
         td.appendChild(btnDelete)
         tr.appendChild(td)
 
-        
         btn.addEventListener ("click",onClickPlayer);
+
 
         tbody.appendChild(tr)
     })
+
     createPager(count,currentPageNo,currentPageSize)
     
 }
