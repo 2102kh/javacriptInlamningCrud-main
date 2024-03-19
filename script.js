@@ -62,7 +62,9 @@ const onClickPlayer = function(event){
   Object.values(allSortLinks).forEach(link=>{
     link.addEventListener("click",()=>{
         currentSortCol = link.dataset.sortcol
-        currentSortOrder = link.dataset.sortorder
+        currentSortOrder = link.dataset.sortorder ==="asc" ? "desc" : "asc"
+        // currentSortCol = sortcol
+        // currentSortOrder = sortorder
         refresh()
     })
     
@@ -173,20 +175,6 @@ const updateTable = function(){
         td.appendChild(btnDelete)
         tr.appendChild(td)        
         btn.addEventListener ("click",onClickPlayer);
-      
-        async function deletePlayer(e){
-            const playerId = e.target.dataset.stefansplayerid
-            let url = `http://localhost:3000/api/players/${playerId}`;
-            
-            let response = await fetch(url, {
-                method: 'DELETE'
-            });
-            const index = players.findIndex(p => p.id == playerId)
-            players.splice(index, 1)
-            updateTable()
-        }
-        
-        btnDelete.addEventListener("click", deletePlayer);
 
         tbody.appendChild(tr)
     }
@@ -252,6 +240,17 @@ function createTd(data){
     element.innerText = data
     return element
 }
+async function deletePlayer(e){
+    const playerId = e.target.dataset.stefansplayerid
+    let url = `http://localhost:3000/api/players/${playerId}`;
+    
+    let response = await fetch(url, {
+        method: 'DELETE'
+    });
+    const index = players.findIndex(p => p.id == playerId)
+    players.splice(index, 1)
+    updateTable()
+}
 
 
 async function refresh(){
@@ -291,7 +290,7 @@ async function refresh(){
 
         let td = document.createElement("td")
         let btn = document.createElement("button")
-        const btnDelete =document.createElement("button")
+        let btnDelete =document.createElement("button")
         btn.textContent = "EDIT"
         btnDelete.textContent ="DELETE"
         btn.dataset.stefansplayerid = play.id
@@ -301,8 +300,7 @@ async function refresh(){
         tr.appendChild(td)
 
         btn.addEventListener ("click",onClickPlayer);
-
-
+        btnDelete.addEventListener("click", deletePlayer);
         tbody.appendChild(tr)
     })
 
