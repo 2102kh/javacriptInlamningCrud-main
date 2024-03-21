@@ -14,7 +14,7 @@ const playerTeamError = document.getElementById('playerTeamError')
 
 
 playerNameElement.addEventListener("input", () => {
-    if (validator.isAlpha(playerNameElement.value) || validator.isEmpty(playerNameElement.value)) {
+    if (validator.isLength(playerNameElement.value,{min:2,max:25}) || validator.isEmpty(playerNameElement.value)) {
         playerNameError.style.display = "none";
     } else {
         playerNameError.style.display = "block";
@@ -67,7 +67,7 @@ async function fetchPlayers(){
 let players =  await fetchPlayers()
 
 searchPlayer.addEventListener("input", function() {
- const searchFor = searchPlayer.value.toLowerCase()
+  const searchFor = searchPlayer.value.toLowerCase()
   for(let i = 0; i < players.length;i++){ // TODO add a matches function 
   if(players[i].matches(searchFor)){
      players[i].visible = true
@@ -163,7 +163,6 @@ closeDialog.addEventListener("click",async (ev)=>{
     })
 
     // let json = await response.json()
-
     players = await fetchPlayers()
     updateTable()
     MicroModal.close('modal-1');
