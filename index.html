@@ -36,7 +36,7 @@
 <table role="grid" id="allPlayers">
 <thead>
   <tr>
-    <th scope="col">Id<i data-sortcol="name" data-sortorder="asc" class="bi bi-arrow-up "></i><i data-sortcol="name" data-sortorder="desc" class="bi bi-arrow-down "></i></th>
+    <th scope="col">Id<i data-sortcol="id" data-sortorder="asc" class="bi bi-arrow-up "></i><i data-sortcol="id" data-sortorder="desc" class="bi bi-arrow-down "></i></th>
     <th scope="col">Name<i data-sortcol="name" data-sortorder="asc" class="bi bi-arrow-up"></i><i data-sortcol="name" data-sortorder="desc" class="bi bi-arrow-down"></i></th>
     <th scope="col">Jersey <i data-sortcol="jersey" data-sortorder="asc" class="bi bi-arrow-up"></i>  <i data-sortcol="jersey" data-sortorder="desc" class="bi bi-arrow-down"></i></th>
     <th scope="col">Position <i data-sortcol="position" data-sortorder="asc" class="bi bi-arrow-up"></i>  <i data-sortcol="position" data-sortorder="desc" class="bi bi-arrow-down"></i></th>
@@ -98,6 +98,7 @@
                     aria-label="Player name"
                     required
                   />
+                  <span id="playerNameError" style="color:red;display: none">Name must contain only letters!</span>
                   <label>Jersey</label>
                   <input
                     type="number"
@@ -106,6 +107,8 @@
                     placeholder=""
                     aria-label="Jersey"
                     required/>
+                    <span id="playerJerseyError" style="color:red; display:none">Jersey can contain only numbers</span>
+                 
                   <label>Position</label>
                   <select
                     name="position"
@@ -127,6 +130,8 @@
                   aria-label="team"
                   required
                 />
+                <span id="playerTeamError" style="color:red; display:none">The field  can contain off only letters and numbers </span>
+                  
             </p>
           
       
@@ -140,9 +145,8 @@
     </form>
 
  </div>
-
+ <script src="https://unpkg.com/validator@latest/validator.min.js"></script>
   <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
   <script type="module" src="script.js"></script>
-  <!-- <script src="sortering.js"></script> -->
   </body>
 </html>

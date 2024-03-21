@@ -4,6 +4,39 @@ const tbody = document.querySelector("#allPlayers tbody")
 const searchPlayer = document.getElementById("searchPlayer")
 const btnAdd = document.getElementById("btnAdd")
 const closeDialog = document.getElementById("closeDialog")
+const playerNameError = document.getElementById('playerNameError')
+const playerNameElement = document.getElementById('playerName')
+const playerJerseyError = document.getElementById('playerJerseyError')
+const playerJerseyElement = document.getElementById('jersey')
+const playerTeamElement = document.getElementById('team')
+const playerTeamError = document.getElementById('playerTeamError')
+
+
+
+playerNameElement.addEventListener("input", () => {
+    if (validator.isAlpha(playerNameElement.value) || validator.isEmpty(playerNameElement.value)) {
+        playerNameError.style.display = "none";
+    } else {
+        playerNameError.style.display = "block";
+    }
+})
+
+playerJerseyElement.addEventListener("input", () => {
+    if (validator.isInt(playerJerseyElement.value)) {
+        playerJerseyError.style.display = "none";
+    } else {
+        playerJerseyError.style.display = "block";
+    }
+})
+playerTeamElement.addEventListener("input", () => {
+    if (validator.isAlphanumeric(playerTeamElement.value) || validator.isEmpty(playerTeamElement.value)) {
+        playerTeamError.style.display = "none";
+    } else {
+        playerTeamError.style.display = "block";
+    }
+})
+
+
 
 
   let currentSortCol = ""
@@ -56,13 +89,12 @@ const onClickPlayer = function(event){
     position.value = player.position
     editingPlayer = player
     MicroModal.show('modal-1');
-
 }
 
   Object.values(allSortLinks).forEach(link=>{
     link.addEventListener("click",()=>{
         currentSortCol = link.dataset.sortcol
-        currentSortOrder = link.dataset.sortorder ==="asc" ? "desc" : "asc"
+        currentSortOrder = link.dataset.sortorder // ==="asc" ? "desc" : "asc"
         // currentSortCol = sortcol
         // currentSortOrder = sortorder
         refresh()
@@ -83,7 +115,7 @@ function debounce(cb, delay = 250) {
   const updateQuery = debounce(query => {
     currentSearchText = query
     refresh()
-  }, 1000)
+  }, 500)
 
 const createTableTdOrTh = function(elementType,innerText){
     let element = document.createElement(elementType)
@@ -149,8 +181,6 @@ btnAdd.addEventListener("click",()=>{
 
 
 const updateTable = function(){
-    // while(allPlayersTBody.firstChild)
-    //     allPlayersTBody.firstChild.remove()
     tbody.innerHTML = ""
 
     // först ta bort alla children
@@ -192,8 +222,6 @@ const updateTable = function(){
 }
 
 updateTable()
-
-
 
 MicroModal.init({
     onShow: modal => console.info(`${modal.id} is shown`), // [1]
@@ -240,6 +268,7 @@ function createTd(data){
     element.innerText = data
     return element
 }
+
 async function deletePlayer(e){
     const playerId = e.target.dataset.stefansplayerid
     let url = `http://localhost:3000/api/players/${playerId}`;
@@ -257,16 +286,11 @@ async function refresh(){
     let offset = (currentPageNo - 1) * currentPageSize
 
     //fetch!
-    let url = "http://localhost:3000/api/players?sortBy=" 
+    let url = "http://localhost:3000/api/players?sortCol=" 
         + currentSortCol + "&sortOrder=" + currentSortOrder +
          "&q=" + currentSearchText + "&limit=" + currentPageSize+  "&offset=" + offset
          console.log(url)
-   
-    // let url = "http://localhost:3000/api/players?sortCol=" 
-    //     + currentSortCol + "&sortOrder=" + currentSortOrder + "&limit=200"
-    //      + "&offset=0" 
     
-
     const response = await fetch(url,{
         headers:{
             'Accept': 'application/json'
@@ -286,7 +310,6 @@ async function refresh(){
         tr.appendChild(createTd(play.jersey))
         tr.appendChild(createTd(play.position))
         tr.appendChild(createTd(play.team))
-
 
         let td = document.createElement("td")
         let btn = document.createElement("button")
